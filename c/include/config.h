@@ -16,7 +16,7 @@ extern "C" {
 #define true  1
 #endif
 
-#ifndef __cplusplus
+#if !defined(bool) && !defined(__cplusplus)
 typedef unsigned int        bool;
 #endif
 typedef unsigned char       frt_uchar;
@@ -28,10 +28,10 @@ typedef posh_i32_t frt_i32;
 typedef posh_u64_t frt_u64;
 typedef posh_i64_t frt_i64;
 
-#if ( LONG_MAX == 2147483647 ) && defined(_FILE_OFFSET_BITS) && (_FILE_OFFSET_BITS == 64)
-#define FRT_OFF_T_PFX "ll"
-#else
+#if (OFF_MAX == INT_MAX)
 #define FRT_OFF_T_PFX "l"
+#else
+#define FRT_OFF_T_PFX "ll"
 #endif
 
 #if defined(__STDC_VERSION__) && (__STDC_VERSION__ >= 199901L) && !defined(__cplusplus)
