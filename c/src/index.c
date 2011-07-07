@@ -3938,7 +3938,7 @@ static IndexReader *ir_setup(IndexReader *ir, Store *store, SegmentInfos *sis,
 
 bool ir_index_exists(Store *store)
 {
-    return sis_current_segment_generation(store) != 1;
+    return sis_current_segment_generation(store) != -1;
 }
 
 int ir_get_field_num(IndexReader *ir, Symbol field)
