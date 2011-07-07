@@ -288,6 +288,15 @@ Query *index_get_query(Index *self, char *qstr)
     return qp_parse(self->qp, qstr);
 }
 
+TopDocs *index_search(Index *self, Query *query, int first_doc,
+                      int num_docs, Filter *filter, Sort *sort,
+                      PostFilter *post_filter)
+{
+    ensure_searcher_open(self);
+    return searcher_search(self->sea, query, first_doc, num_docs,
+                           filter, sort, post_filter);
+}
+
 TopDocs *index_search_str(Index *self, char *qstr, int first_doc,
                           int num_docs, Filter *filter, Sort *sort,
                           PostFilter *post_filter)

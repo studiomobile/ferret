@@ -611,6 +611,7 @@
 #define index_is_locked                                frt_index_is_locked
 #define index_new                                      frt_index_new
 #define index_optimize                                 frt_index_optimize
+#define index_search                                   frt_index_search
 #define index_search_str                               frt_index_search_str
 #define index_size                                     frt_index_size
 #define index_term_id                                  frt_index_term_id

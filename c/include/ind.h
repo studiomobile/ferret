@@ -45,6 +45,9 @@ extern bool frt_index_is_deleted(FrtIndex *self, int doc_num);
 extern void frt_index_add_doc(FrtIndex *self, FrtDocument *doc);
 extern void frt_index_add_string(FrtIndex *self, char *str);
 extern void frt_index_add_array(FrtIndex *self, char **ary);
+extern FrtTopDocs *frt_index_search(FrtIndex *self, FrtQuery *query, int first_doc,
+                                    int num_docs, FrtFilter *filter,
+                                    FrtSort *sort, FrtPostFilter *post_filter);
 extern FrtTopDocs *frt_index_search_str(FrtIndex *self, char *query, int first_doc,
                                  int num_docs, FrtFilter *filter,
                                  FrtSort *sort, FrtPostFilter *post_filter);
