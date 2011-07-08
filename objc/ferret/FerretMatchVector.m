@@ -58,21 +58,19 @@
     self = [super init];
     if (self) {
         range = _range;
-        location = NSMakeRange(range.start, range.end - range.start);
-        offset = NSMakeRange(range.start_offset, range.end_offset - range.start_offset);
     }
     return self;
 }
 
-- (double)score
-{
-    return range.score;
-}
+- (NSRange)location { return NSMakeRange(range.start, range.end - range.start + 1); }
+
+- (NSRange)offset { return NSMakeRange(range.start_offset, range.end_offset - range.start_offset + 1); }
+
+- (double)score { return range.score; }
 
 - (NSString*)description
 {
-    return [NSString stringWithFormat:@"<FerretMatch: loc:%d %d off:%d %d score:%f", range.start, range.end, range.start_offset, range.end_offset, range.score];
-    return [NSString stringWithFormat:@"<FerretMatch: loc:%@ off:%@ score:%f", NSStringFromRange(location), NSStringFromRange(offset), range.score];
+    return [NSString stringWithFormat:@"<FerretMatch: loc:[%d..%d] off:[%d..%d] score:%.3f>", range.start, range.end, range.start_offset, range.end_offset, range.score];
 }
 
 @end
