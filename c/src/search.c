@@ -634,6 +634,10 @@ MatchVector *searcher_get_match_vector(Searcher *self,
     }
     if (tv && tv->term_cnt > 0 && tv->terms[0].positions != NULL) {
         mv = query->get_matchv_i(query, mv, tv);
+        matchv_compact_with_breaks(mv);
+        if (tv->offsets != NULL) {
+            matchv_set_offsets(mv, tv->offsets);
+        }
         tv_destroy(tv);
     }
     if (rewrite) {
