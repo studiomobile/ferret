@@ -8,9 +8,14 @@
 
 #import <Foundation/Foundation.h>
 
+@class FerretMatchVector;
+@class FerretDocument;
+
 @interface FerretQuery : NSObject
 
 @property (nonatomic, assign) NSInteger offset;
 @property (nonatomic, assign) NSInteger count;
+
+- (FerretMatchVector*)matchVectorForDocument:(FerretDocument*)doc field:(NSString*)field;
 
 @end

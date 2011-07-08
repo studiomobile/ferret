@@ -24,6 +24,7 @@
 #import "FerretField.h"
 #import "FerretFieldDescriptor.h"
 #import "FerretQuery.h"
+#import "FerretMatchVector.h"
 
 
 @interface FerretStore ()
@@ -70,8 +71,8 @@
 @property (nonatomic, readonly) FrtDocument *doc;
 @property (nonatomic, strong) FerretSearcher *searcher;
 @property (nonatomic, strong) FerretIndex *index;
-- (id)initWithLazyDoc:(FrtLazyDoc*)doc;
-- (id)initWithDocument:(FrtDocument*)doc;
+- (id)initWithLazyDoc:(FrtLazyDoc*)doc docId:(NSInteger)docId;
+- (id)initWithDocument:(FrtDocument*)doc docId:(NSInteger)docId;
 @end
 
 @interface FerretField ()
@@ -90,4 +91,9 @@
 @interface FerretQuery ()
 @property (nonatomic, readonly) FrtQuery *query;
 - (id)initWithQuery:(FrtQuery*)query;
+@end
+
+@interface FerretMatchVector ()
+@property (nonatomic, readonly) FrtMatchVector *vector;
+- (id)initWithMatchVector:(FrtMatchVector*)vector;
 @end

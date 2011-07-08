@@ -8,9 +8,16 @@
 
 #import <Foundation/Foundation.h>
 
+@class FerretQuery;
+@class FerretMatchVector;
+
 @interface FerretDocument : NSObject
+
+@property (nonatomic, readonly) NSInteger docId;
 
 - (NSString*)stringValueOfField:(NSString*)fieldName;
 - (NSData*)dataValueOfField:(NSString*)fieldName;
+
+- (FerretMatchVector*)matchVectorForQuery:(FerretQuery*)query field:(NSString*)fieldName;
 
 @end

@@ -41,7 +41,7 @@
 - (FerretDocument*)documentWithId:(NSInteger)docId
 {
     FrtDocument *d = frt_index_get_doc_ts(index, docId);
-    FerretDocument *doc = [[FerretDocument alloc] initWithDocument:d];
+    FerretDocument *doc = [[FerretDocument alloc] initWithDocument:d docId:docId];
     doc.index = self;
     return doc;
 }

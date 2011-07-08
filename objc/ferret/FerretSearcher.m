@@ -47,7 +47,7 @@
 {
     if (docId < 0 || docId > frt_searcher_max_doc(searcher)) return nil;
     FrtLazyDoc *doc = frt_searcher_get_lazy_doc(searcher, docId);
-    FerretDocument *d = [[FerretDocument alloc] initWithLazyDoc:doc];
+    FerretDocument *d = [[FerretDocument alloc] initWithLazyDoc:doc docId:docId];
     d.searcher = self;
     return d;
 }
