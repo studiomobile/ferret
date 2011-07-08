@@ -57,6 +57,8 @@ extern FrtDocument *frt_index_get_doc_ts(FrtIndex *self, int doc_num);
 extern FrtDocument *frt_index_get_doc_id(FrtIndex *self, const char *id);
 extern FrtDocument *frt_index_get_doc_term(FrtIndex *self, FrtSymbol field,
                                     const char *term);
+extern FrtMatchVector *frt_index_get_match_vector(FrtIndex *self, FrtQuery *query,
+                                                  const int doc_num, FrtSymbol field);
 extern void frt_index_delete(FrtIndex *self, int doc_num);
 extern void frt_index_delete_term(FrtIndex *self, FrtSymbol field, const char *term);
 extern void frt_index_delete_id(FrtIndex *self, const char *id);

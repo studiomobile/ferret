@@ -604,6 +604,7 @@
 #define index_get_doc                                  frt_index_get_doc
 #define index_get_doc_id                               frt_index_get_doc_id
 #define index_get_doc_term                             frt_index_get_doc_term
+#define index_get_match_vector                         frt_index_get_match_vector
 #define index_get_doc_ts                               frt_index_get_doc_ts
 #define index_get_query                                frt_index_get_query
 #define index_has_del                                  frt_index_has_del

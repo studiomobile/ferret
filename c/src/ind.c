@@ -360,6 +360,13 @@ Document *index_get_doc_term(Index *self, Symbol field,
     return doc;
 }
 
+FrtMatchVector *index_get_match_vector(FrtIndex *self, Query *query,
+                                       const int doc_num, Symbol field)
+{
+    ensure_searcher_open(self);
+	return searcher_get_match_vector(self->sea, query, doc_num, field);
+}
+
 Document *index_get_doc_id(Index *self, const char *id)
 {
     return index_get_doc_term(self, self->id_field, id);
