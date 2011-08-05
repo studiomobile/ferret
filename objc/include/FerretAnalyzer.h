@@ -8,8 +8,12 @@
 
 #import <Foundation/Foundation.h>
 
+@class FerretTokenStream;
+
 @interface FerretAnalyzer : NSObject
 
 + (FerretAnalyzer*)defaultAnalyzer;
+
+- (FerretTokenStream*)getTokenStreamForText:(NSString*)text;
 
 @end

@@ -10,8 +10,7 @@
 #import "FerretInternals.h"
 
 @interface FerretMatch ()
-@property (nonatomic, assign) FrtMatchRange range;
-- (id)initWithMatchRange:(FrtMatchRange)range;
+- (id)initWithMatchRange:(FrtMatchRange*)range;
 @end
 
 @implementation FerretMatchVector
@@ -27,7 +26,7 @@
         vector = _vector;
         NSMutableArray *arr = [NSMutableArray new];
         for (int i = 0; i < vector->size; ++i) {
-            [arr addObject:[[FerretMatch alloc] initWithMatchRange:vector->matches[i]]];
+            [arr addObject:[[FerretMatch alloc] initWithMatchRange:&vector->matches[i]]];
         }
         matches = [arr copy];
     }
@@ -42,35 +41,31 @@
 
 - (NSString*)description
 {
-    return [NSString stringWithFormat:@"%@", matches];
+    return [NSString stringWithFormat:@"<FerretMatchVector matches:%@>", matches];
 }
 
 @end
 
 @implementation FerretMatch
 
-@synthesize range;
 @synthesize location;
 @synthesize offset;
+@synthesize score;
 
-- (id)initWithMatchRange:(FrtMatchRange)_range
+- (id)initWithMatchRange:(FrtMatchRange*)frtRange
 {
     self = [super init];
     if (self) {
-        range = _range;
+        location = NSMakeRange(frtRange->start, frtRange->end - frtRange->start + 1);
+        offset = NSMakeRange(frtRange->start_offset, frtRange->end_offset - frtRange->start_offset + 1);
+        score = frtRange->score;
     }
     return self;
 }
 
-- (NSRange)location { return NSMakeRange(range.start, range.end - range.start + 1); }
-
-- (NSRange)offset { return NSMakeRange(range.start_offset, range.end_offset - range.start_offset + 1); }
-
-- (double)score { return range.score; }
-
 - (NSString*)description
 {
-    return [NSString stringWithFormat:@"<FerretMatch: loc:[%d..%d] off:[%d..%d] score:%.3f>", range.start, range.end, range.start_offset, range.end_offset, range.score];
+    return [NSString stringWithFormat:@"<FerretMatch: loc:%@ off:%@ score:%.3f>", NSStringFromRange(location), NSStringFromRange(offset), score];
 }
 
 @end

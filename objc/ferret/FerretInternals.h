@@ -25,6 +25,7 @@
 #import "FerretFieldDescriptor.h"
 #import "FerretQuery.h"
 #import "FerretMatchVector.h"
+#import "FerretTokenStream.h"
 
 
 @interface FerretStore ()
@@ -96,4 +97,9 @@
 @interface FerretMatchVector ()
 @property (nonatomic, readonly) FrtMatchVector *vector;
 - (id)initWithMatchVector:(FrtMatchVector*)vector;
+@end
+
+@interface FerretTokenStream ()
+@property (nonatomic, readonly) FrtTokenStream *stream;
+- (id)initWithTokenStream:(FrtTokenStream*)stream;
 @end

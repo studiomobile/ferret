@@ -9,18 +9,3 @@ DerivedData
 *.swp
 *.tm_build_errors
 xcuserdata
-
-# old school
-.svn
-
-# osx noise
-.DS_Store
-profile
-
-#emacs noise
-TAGS
-ID
-*~
-*#
-.emacs.desktop
-

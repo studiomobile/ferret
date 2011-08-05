@@ -36,9 +36,15 @@
 
 + (FerretAnalyzer*)defaultAnalyzer
 {
-    FrtAnalyzer *a = frt_utf8_standard_analyzer_new(false);
+//    FrtAnalyzer *a = frt_utf8_standard_analyzer_new(false);
+    FrtAnalyzer *a = frt_analyzer_new(frt_hyphen_filter_new(frt_utf8_standard_tokenizer_new()), NULL, NULL);
     return [[self alloc] initWithAnalyzer:a];
 }
 
+- (FerretTokenStream*)getTokenStreamForText:(NSString*)text
+{
+    FrtTokenStream *ts = frt_a_get_ts(analyzer, frt_intern("text"), (char*)[text UTF8String]);
+    return [[FerretTokenStream alloc] initWithTokenStream:ts];
+}
 
 @end
