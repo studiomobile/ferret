@@ -43,7 +43,7 @@ static char *ste_next(TermEnum *te);
 #define FORMAT 0
 #define SEGMENTS_GEN_FILE_NAME "segments"
 #define MAX_EXT_LEN 10
-#define ZIP_BUFFER_SIZE 16348
+#define ZIP_BUFFER_SIZE 16384
 #define ZIP_LEVEL 9
 
 /* *** Must be three characters *** */
@@ -1264,14 +1264,14 @@ static char *is_read_zipped_bytes(InStream *is, int zip_len, int *len)
 
     do {
         read_len = zip_len > ZIP_BUFFER_SIZE ? ZIP_BUFFER_SIZE : zip_len;
-        is_read_bytes(is, buf_in, zip_len);
+        is_read_bytes(is, buf_in, read_len);
         zip_len -= read_len;
         zstrm.avail_in = read_len;
         zstrm.next_in = buf_in;
-        zstrm.avail_out = ZIP_BUFFER_SIZE;
 
         do {
             REALLOC_N(buf_out, uchar, buf_out_idx + ZIP_BUFFER_SIZE);
+            zstrm.avail_out = ZIP_BUFFER_SIZE;
             zstrm.next_out = buf_out + buf_out_idx;
             ret = inflate(&zstrm, Z_NO_FLUSH);
             assert(ret != Z_STREAM_ERROR);  /* state not clobbered */
@@ -1290,8 +1290,8 @@ static char *is_read_zipped_bytes(InStream *is, int zip_len, int *len)
     /* clean up */
     (void)inflateEnd(&zstrm);
 
-    buf_out[buf_out_idx] = '\0';
     REALLOC_N(buf_out, uchar, buf_out_idx + 1);
+    buf_out[buf_out_idx] = '\0';
     *len = buf_out_idx;
     return (char *)buf_out;
 }
@@ -1349,14 +1349,14 @@ static char *is_read_zipped_bytes(InStream *is, int zip_len, int *len)
 
     do {
         read_len = zip_len > ZIP_BUFFER_SIZE ? ZIP_BUFFER_SIZE : zip_len;
-        is_read_bytes(is, (uchar *)buf_in, zip_len);
+        is_read_bytes(is, (uchar *)buf_in, read_len);
         zip_len -= read_len;
         zstrm.avail_in = read_len;
         zstrm.next_in = buf_in;
-        zstrm.avail_out = ZIP_BUFFER_SIZE;
 
         do {
             REALLOC_N(buf_out, char, buf_out_idx + ZIP_BUFFER_SIZE);
+            zstrm.avail_out = ZIP_BUFFER_SIZE;
             zstrm.next_out = buf_out + buf_out_idx;
             ret = BZ2_bzDecompress(&zstrm);
             assert(ret != BZ_SEQUENCE_ERROR);  /* state not clobbered */
@@ -1371,8 +1371,8 @@ static char *is_read_zipped_bytes(InStream *is, int zip_len, int *len)
     /* clean up */
     (void)BZ2_bzDecompressEnd(&zstrm);
 
-    buf_out[buf_out_idx] = '\0';
     REALLOC_N(buf_out, char, buf_out_idx + 1);
+    buf_out[buf_out_idx] = '\0';
     *len = buf_out_idx;
     return (char *)buf_out;
 }
@@ -1842,10 +1842,10 @@ static int os_write_zipped_bytes(OutStream* out_stream, uchar *data, int length)
 
     zstrm.avail_in = length;
     zstrm.next_in = data;
-    zstrm.avail_out = ZIP_BUFFER_SIZE;
-    zstrm.next_out = out_buffer;
 
     do {
+        zstrm.avail_out = ZIP_BUFFER_SIZE;
+        zstrm.next_out = out_buffer;
         ret = deflate(&zstrm, Z_FINISH); /* no bad return value */
         assert(ret != Z_STREAM_ERROR) ;  /* state not clobbered */
         zip_len += buf_size = ZIP_BUFFER_SIZE - zstrm.avail_out;
@@ -1870,10 +1870,10 @@ static int os_write_zipped_bytes(OutStream* out_stream, uchar *data, int length)
 
     zstrm.avail_in = length;
     zstrm.next_in = (char *)data;
-    zstrm.avail_out = ZIP_BUFFER_SIZE;
-    zstrm.next_out = out_buffer;
 
     do {
+        zstrm.avail_out = ZIP_BUFFER_SIZE;
+        zstrm.next_out = out_buffer;
         ret = BZ2_bzCompress(&zstrm, BZ_FINISH); /* no bad return value */
         assert(ret != BZ_SEQUENCE_ERROR);        /* state not clobbered */
         zip_len += buf_size = ZIP_BUFFER_SIZE - zstrm.avail_out;
