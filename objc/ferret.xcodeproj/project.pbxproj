@@ -110,6 +110,7 @@
 		B40A604F13C32DEC0004571E /* FerretIndexWriter.h in Headers */ = {isa = PBXBuildFile; fileRef = B40A604613C32DEC0004571E /* FerretIndexWriter.h */; settings = {ATTRIBUTES = (); }; };
 		B40A605013C32DEC0004571E /* FerretSearcher.h in Headers */ = {isa = PBXBuildFile; fileRef = B40A604713C32DEC0004571E /* FerretSearcher.h */; settings = {ATTRIBUTES = (); }; };
 		B40A605113C32DEC0004571E /* FerretStore.h in Headers */ = {isa = PBXBuildFile; fileRef = B40A604813C32DEC0004571E /* FerretStore.h */; settings = {ATTRIBUTES = (); }; };
+		B415C7E214054349006AD8C7 /* UnicodeWhitespaceTokenizer.h in Headers */ = {isa = PBXBuildFile; fileRef = B415C7E114054349006AD8C7 /* UnicodeWhitespaceTokenizer.h */; };
 		B417794A13C49C74001153BE /* FerretIndexWriter.m in Sources */ = {isa = PBXBuildFile; fileRef = B417794813C49C74001153BE /* FerretIndexWriter.m */; };
 		B423C5BA13D40A65007A077B /* FerretTokenStream.m in Sources */ = {isa = PBXBuildFile; fileRef = B423C5B813D40A65007A077B /* FerretTokenStream.m */; };
 		B423C5BD13D40AAB007A077B /* FerretTokenStream.h in Headers */ = {isa = PBXBuildFile; fileRef = B423C5BC13D40AAB007A077B /* FerretTokenStream.h */; };
@@ -297,6 +298,7 @@
 		B40A604613C32DEC0004571E /* FerretIndexWriter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FerretIndexWriter.h; sourceTree = "<group>"; };
 		B40A604713C32DEC0004571E /* FerretSearcher.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FerretSearcher.h; sourceTree = "<group>"; };
 		B40A604813C32DEC0004571E /* FerretStore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FerretStore.h; sourceTree = "<group>"; };
+		B415C7E114054349006AD8C7 /* UnicodeWhitespaceTokenizer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UnicodeWhitespaceTokenizer.h; sourceTree = "<group>"; };
 		B417794813C49C74001153BE /* FerretIndexWriter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FerretIndexWriter.m; sourceTree = "<group>"; };
 		B423C5B813D40A65007A077B /* FerretTokenStream.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FerretTokenStream.m; sourceTree = "<group>"; };
 		B423C5BC13D40AAB007A077B /* FerretTokenStream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FerretTokenStream.h; sourceTree = "<group>"; };
@@ -587,6 +589,7 @@
 				B40A603213C32DDC0004571E /* FerretInternals.h */,
 				B40A602B13C32DDC0004571E /* ferret-Prefix.pch */,
 				B40A602C13C32DDC0004571E /* FerretAnalyzer.m */,
+				B415C7E114054349006AD8C7 /* UnicodeWhitespaceTokenizer.h */,
 				B40A602D13C32DDC0004571E /* FerretConfig.m */,
 				B40A602E13C32DDC0004571E /* FerretDocument.m */,
 				B40A602F13C32DDC0004571E /* FerretField.m */,
@@ -649,6 +652,7 @@
 				B40A605113C32DEC0004571E /* FerretStore.h in Headers */,
 				B4B3F0AB13C6FF6700F9355F /* FerretMatch.h in Headers */,
 				B423C5BD13D40AAB007A077B /* FerretTokenStream.h in Headers */,
+				B415C7E214054349006AD8C7 /* UnicodeWhitespaceTokenizer.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

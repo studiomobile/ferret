@@ -27,8 +27,6 @@
 @interface FerretToken : NSObject
 
 @property (nonatomic, readonly, strong) NSString *text;
-@property (nonatomic, readonly) NSRange range;
-@property (nonatomic, readonly) NSInteger pos;
-@property (nonatomic, readonly) NSInteger posInc;
+@property (nonatomic, readonly) NSRange byteRange;
 
 @end
