@@ -9,7 +9,6 @@
 #import <Foundation/Foundation.h>
 
 @class FerretQuery;
-@class FerretMatchVector;
 
 @interface FerretDocument : NSObject
 
@@ -18,6 +17,6 @@
 - (NSString*)stringValueOfField:(NSString*)fieldName;
 - (NSData*)dataValueOfField:(NSString*)fieldName;
 
-- (FerretMatchVector*)matchVectorForQuery:(FerretQuery*)query field:(NSString*)fieldName;
+- (NSArray*)matchesForQuery:(FerretQuery*)query field:(NSString*)fieldName;
 
 @end

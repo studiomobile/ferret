@@ -16,6 +16,8 @@
 
 @interface FerretIndex : NSObject
 
+@property (nonatomic, readonly, strong) FerretAnalyzer *analyzer;
+
 + (FerretIndex*)indexWithStore:(FerretStore*)store analyzer:(FerretAnalyzer*)analyzer;
 
 - (FerretDocument*)documentWithId:(NSInteger)docId;

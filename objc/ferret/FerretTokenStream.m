@@ -14,23 +14,32 @@
 @end
 
 @interface FerretTokenStream ()
+@property (nonatomic, readonly) FrtTokenStream *stream;
 @property (nonatomic, readonly) NSInteger token_pos;
 @end
 
 @implementation FerretTokenStream
 
+@synthesize text;
 @synthesize stream;
 @synthesize token_pos;
 
-- (id)initWithTokenStream:(FrtTokenStream*)_stream
+- (id)initWithText:(NSString*)_text analyzer:(FerretAnalyzer*)analyzer
 {
-    if (!_stream) return nil;
+    if (!_text || !analyzer) return NULL;
     self = [super init];
     if (self) {
-        stream = _stream;
+        text = _text;
+        stream = frt_a_get_ts(analyzer.analyzer, frt_intern("text"), (char*)[text UTF8String]);
+        if (!stream) return nil;
         token_pos = 0;
     }
     return self;
+}
+
++ (FerretTokenStream*)tokenStreamForText:(NSString*)text analyzer:(FerretAnalyzer*)analyzer
+{
+    return [[self alloc] initWithText:text analyzer:analyzer];
 }
 
 - (void)dealloc
@@ -49,8 +58,18 @@
 
 - (void)reset
 {
-    stream->reset(stream, stream->text);
+    stream->reset(stream, (char*)[text UTF8String]);
     token_pos = 0;
+}
+
+- (NSArray*)collectAll
+{
+    NSMutableArray *tokens = [NSMutableArray array];
+    FerretToken *tok = nil;
+    while ((tok = [self next])) {
+        [tokens addObject:tok];
+    }
+    return tokens;
 }
 
 @end
@@ -68,8 +87,8 @@
     if (!tok) return nil;
     self = [super init];
     if (self) {
-        text = [NSString stringWithCString:tok->text encoding:NSUTF8StringEncoding];
-        range = NSMakeRange(tok->start, tok->end - tok->start + 1);
+        text = [[NSString alloc] initWithBytes:tok->text length:tok->len encoding:NSUTF8StringEncoding];
+        range = NSMakeRange(tok->start, tok->len);
         pos = _pos;
         posInc = tok->pos_inc;
     }
@@ -78,7 +97,7 @@
 
 - (NSString*)description
 {
-    return [NSString stringWithFormat:@"<FerretToken: \"%@\", %@, %d+%d>", text, NSStringFromRange(range), pos, posInc];
+    return [NSString stringWithFormat:@"<FerretToken: '%@', bytes:%@>", text, NSStringFromRange(range)];
 }
 
 @end

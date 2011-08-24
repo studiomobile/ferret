@@ -33,9 +33,9 @@
     query = NULL;
 }
 
-- (FerretMatchVector*)matchVectorForDocument:(FerretDocument*)doc field:(NSString*)field
+- (NSArray*)matchesForDocument:(FerretDocument*)doc field:(NSString*)field
 {
-    return [doc matchVectorForQuery:self field:field];
+    return [doc matchesForQuery:self field:field];
 }
 
 @end

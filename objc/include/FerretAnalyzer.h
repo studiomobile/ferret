@@ -14,6 +14,4 @@
 
 + (FerretAnalyzer*)defaultAnalyzer;
 
-- (FerretTokenStream*)getTokenStreamForText:(NSString*)text;
-
 @end

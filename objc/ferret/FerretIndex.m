@@ -12,13 +12,15 @@
 @implementation FerretIndex
 
 @synthesize index;
+@synthesize analyzer;
 
-- (id)initWithFrtIndex:(FrtIndex*)_index
+- (id)initWithFrtIndex:(FrtIndex*)_index analyzer:(FerretAnalyzer*)_analyzer
 {
     if (!_index) return nil;
     self = [super init];
     if (self) {
         index = _index;
+        analyzer = _analyzer;
     }
     return self;
 }
@@ -35,7 +37,7 @@
 + (FerretIndex*)indexWithStore:(FerretStore*)store analyzer:(FerretAnalyzer*)analyzer
 {
     FrtIndex *idx = frt_index_new(store.store, analyzer.analyzer, frt_hs_new_ptr(NULL), ![store isIndexExists]);
-    return [[self alloc] initWithFrtIndex:idx];
+    return [[self alloc] initWithFrtIndex:idx analyzer:analyzer];
 }
 
 - (FerretDocument*)documentWithId:(NSInteger)docId
@@ -69,14 +71,13 @@
 {
     FrtDocument *doc = frt_doc_new();
     if (boost != 0.0f) doc->boost = boost;
-    for (id key in fields) {
-        NSString *name = [key description];
+    for (NSString *key in fields) {
         id value = [fields objectForKey:key];
         FrtDocField *field = NULL;
         if ([value isKindOfClass:[NSData class]]) {
-            field = [FerretField createDocFieldWithName:name data:value];
+            field = [FerretField createDocFieldWithName:key data:value];
         } else {
-            field = [FerretField createDocFieldWithName:name value:[value description]];
+            field = [FerretField createDocFieldWithName:key value:value];
         }
         frt_doc_add_field(doc, field);
     }

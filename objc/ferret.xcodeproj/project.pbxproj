@@ -117,8 +117,8 @@
 		B4A2782F13C5B53D000C60AA /* FerretIndex.h in Headers */ = {isa = PBXBuildFile; fileRef = B4A2782E13C5B53D000C60AA /* FerretIndex.h */; };
 		B4A2783313C5B6FD000C60AA /* FerretSearchResults.m in Sources */ = {isa = PBXBuildFile; fileRef = B4A2783113C5B6FD000C60AA /* FerretSearchResults.m */; };
 		B4A2783513C5B721000C60AA /* FerretSearchResults.h in Headers */ = {isa = PBXBuildFile; fileRef = B4A2783413C5B721000C60AA /* FerretSearchResults.h */; };
-		B4B3F0A813C6FEB200F9355F /* FerretMatchVector.m in Sources */ = {isa = PBXBuildFile; fileRef = B4B3F0A613C6FEB200F9355F /* FerretMatchVector.m */; };
-		B4B3F0AB13C6FF6700F9355F /* FerretMatchVector.h in Headers */ = {isa = PBXBuildFile; fileRef = B4B3F0AA13C6FF6700F9355F /* FerretMatchVector.h */; };
+		B4B3F0A813C6FEB200F9355F /* FerretMatch.m in Sources */ = {isa = PBXBuildFile; fileRef = B4B3F0A613C6FEB200F9355F /* FerretMatch.m */; };
+		B4B3F0AB13C6FF6700F9355F /* FerretMatch.h in Headers */ = {isa = PBXBuildFile; fileRef = B4B3F0AA13C6FF6700F9355F /* FerretMatch.h */; };
 		B4CE98FC13C5993B00E7CEC9 /* FerretQuery.m in Sources */ = {isa = PBXBuildFile; fileRef = B4CE98FA13C5993B00E7CEC9 /* FerretQuery.m */; };
 		B4CE98FD13C5993B00E7CEC9 /* FerretQueryParser.m in Sources */ = {isa = PBXBuildFile; fileRef = B4CE98FB13C5993B00E7CEC9 /* FerretQueryParser.m */; };
 		B4CE990113C5994300E7CEC9 /* FerretQuery.h in Headers */ = {isa = PBXBuildFile; fileRef = B4CE98FF13C5994300E7CEC9 /* FerretQuery.h */; };
@@ -304,8 +304,8 @@
 		B4A2782E13C5B53D000C60AA /* FerretIndex.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FerretIndex.h; sourceTree = "<group>"; };
 		B4A2783113C5B6FD000C60AA /* FerretSearchResults.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FerretSearchResults.m; sourceTree = "<group>"; };
 		B4A2783413C5B721000C60AA /* FerretSearchResults.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FerretSearchResults.h; sourceTree = "<group>"; };
-		B4B3F0A613C6FEB200F9355F /* FerretMatchVector.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FerretMatchVector.m; sourceTree = "<group>"; };
-		B4B3F0AA13C6FF6700F9355F /* FerretMatchVector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FerretMatchVector.h; sourceTree = "<group>"; };
+		B4B3F0A613C6FEB200F9355F /* FerretMatch.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FerretMatch.m; sourceTree = "<group>"; };
+		B4B3F0AA13C6FF6700F9355F /* FerretMatch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FerretMatch.h; sourceTree = "<group>"; };
 		B4CE98FA13C5993B00E7CEC9 /* FerretQuery.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FerretQuery.m; sourceTree = "<group>"; };
 		B4CE98FB13C5993B00E7CEC9 /* FerretQueryParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FerretQueryParser.m; sourceTree = "<group>"; };
 		B4CE98FF13C5994300E7CEC9 /* FerretQuery.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FerretQuery.h; sourceTree = "<group>"; };
@@ -599,7 +599,7 @@
 				B40A603413C32DDC0004571E /* FerretStore.m */,
 				B4CE98FA13C5993B00E7CEC9 /* FerretQuery.m */,
 				B4CE98FB13C5993B00E7CEC9 /* FerretQueryParser.m */,
-				B4B3F0A613C6FEB200F9355F /* FerretMatchVector.m */,
+				B4B3F0A613C6FEB200F9355F /* FerretMatch.m */,
 				B423C5B813D40A65007A077B /* FerretTokenStream.m */,
 			);
 			path = ferret;
@@ -621,7 +621,7 @@
 				B40A604813C32DEC0004571E /* FerretStore.h */,
 				B4CE98FF13C5994300E7CEC9 /* FerretQuery.h */,
 				B4CE990013C5994300E7CEC9 /* FerretQueryParser.h */,
-				B4B3F0AA13C6FF6700F9355F /* FerretMatchVector.h */,
+				B4B3F0AA13C6FF6700F9355F /* FerretMatch.h */,
 				B423C5BC13D40AAB007A077B /* FerretTokenStream.h */,
 			);
 			path = include;
@@ -647,7 +647,7 @@
 				B40A604F13C32DEC0004571E /* FerretIndexWriter.h in Headers */,
 				B40A605013C32DEC0004571E /* FerretSearcher.h in Headers */,
 				B40A605113C32DEC0004571E /* FerretStore.h in Headers */,
-				B4B3F0AB13C6FF6700F9355F /* FerretMatchVector.h in Headers */,
+				B4B3F0AB13C6FF6700F9355F /* FerretMatch.h in Headers */,
 				B423C5BD13D40AAB007A077B /* FerretTokenStream.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -800,7 +800,7 @@
 				B4CE98FD13C5993B00E7CEC9 /* FerretQueryParser.m in Sources */,
 				B4A2782C13C5B452000C60AA /* FerretIndex.m in Sources */,
 				B4A2783313C5B6FD000C60AA /* FerretSearchResults.m in Sources */,
-				B4B3F0A813C6FEB200F9355F /* FerretMatchVector.m in Sources */,
+				B4B3F0A813C6FEB200F9355F /* FerretMatch.m in Sources */,
 				B423C5BA13D40A65007A077B /* FerretTokenStream.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
