@@ -83,12 +83,12 @@
 
 - (void)createIndexWithFieldDescriptors:(NSArray*)descriptors
 {
-    NSMutableArray *fs = [NSMutableArray new];
     FrtFieldInfos *fis = frt_fis_new(FRT_STORE_YES, FRT_INDEX_NO, FRT_TERM_VECTOR_NO);
     for (FerretFieldDescriptor *desc in descriptors) {
-        FerretField *f = [[FerretField alloc] initWithFieldDescriptor:desc];
-        frt_fis_add_field(fis, f.field);
-        [fs addObject:f];
+        FrtSymbol name = frt_intern([desc.name UTF8String]);
+        FrtFieldInfo *fi = frt_fi_new(name, desc.storeValue, desc.indexValue, desc.termVectorValue);
+        frt_fis_add_field(fis, fi);
+        frt_fi_deref(fi);
     }
     frt_index_create(store, fis);
     frt_fis_deref(fis);

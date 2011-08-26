@@ -21,8 +21,8 @@
 
 - (FerretIndexReader*)readIndex;
 
-- (void)appendDocument:(NSDictionary*)fields;
-- (void)appendDocument:(NSDictionary*)fields boost:(float)boost;
+- (void)appendDocumentFields:(NSArray*)fields;
+- (void)appendDocumentFields:(NSArray*)fields boost:(float)boost;
 
 - (void)commit;
 - (void)optimize;

@@ -6,12 +6,15 @@
 //  Copyright 2011 Studio Mobile. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
-
-@class FerretFieldDescriptor;
+#import "FerretFieldDescriptor.h"
 
 @interface FerretField : NSObject
 
-- (id)initWithFieldDescriptor:(FerretFieldDescriptor*)desc;
+@property (nonatomic, readonly, strong) FerretFieldDescriptor *descriptor;
+@property (nonatomic, strong) NSData *data;
+@property (nonatomic, strong) NSString *value;
+@property (nonatomic, assign) float boost;
+
+- (id)initWithFieldDescriptor:(FerretFieldDescriptor*)descriptor;
 
 @end

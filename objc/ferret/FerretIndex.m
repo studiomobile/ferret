@@ -62,24 +62,18 @@
     return results;
 }
 
-- (void)appendDocument:(NSDictionary*)fields
+- (void)appendDocumentFields:(NSArray*)fields
 {
-    [self appendDocument:fields boost:0];
+    [self appendDocumentFields:fields boost:0];
 }
 
-- (void)appendDocument:(NSDictionary*)fields boost:(float)boost
+- (void)appendDocumentFields:(NSArray*)fields boost:(float)boost
 {
     FrtDocument *doc = frt_doc_new();
     if (boost != 0.0f) doc->boost = boost;
-    for (NSString *key in fields) {
-        id value = [fields objectForKey:key];
-        FrtDocField *field = NULL;
-        if ([value isKindOfClass:[NSData class]]) {
-            field = [FerretField createDocFieldWithName:key data:value];
-        } else {
-            field = [FerretField createDocFieldWithName:key value:value];
-        }
-        frt_doc_add_field(doc, field);
+    for (FerretField *field in fields) {
+        FrtDocField *docField = [field createDocField];
+        frt_doc_add_field(doc, docField);
     }
     frt_index_add_doc(index, doc);
     frt_doc_destroy(doc);

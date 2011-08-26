@@ -75,10 +75,7 @@
 @end
 
 @interface FerretField ()
-@property (nonatomic, readonly) FrtFieldInfo *field;
-+ (FrtDocField*)createDocFieldWithName:(NSString*)name value:(NSString*)value;
-+ (FrtDocField*)createDocFieldWithName:(NSString*)name data:(NSData*)data;
-- (id)initWithField:(FrtFieldInfo*)field;
+- (FrtDocField*)createDocField;
 @end
 
 @interface FerretFieldDescriptor ()

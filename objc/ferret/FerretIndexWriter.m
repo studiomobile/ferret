@@ -63,25 +63,18 @@
     return reader;
 }
 
-- (void)appendDocument:(NSDictionary*)fields
+- (void)appendDocumentFields:(NSArray*)fields
 {
-    [self appendDocument:fields boost:0];
+    [self appendDocumentFields:fields boost:0];
 }
 
-- (void)appendDocument:(NSDictionary*)fields boost:(float)boost
+- (void)appendDocumentFields:(NSArray*)fields boost:(float)boost
 {
     FrtDocument *doc = frt_doc_new();
     if (boost != 0.0f) doc->boost = boost;
-    for (id key in fields) {
-        NSString *name = [key description];
-        id value = [fields objectForKey:key];
-        FrtDocField *field = NULL;
-        if ([value isKindOfClass:[NSData class]]) {
-            field = [FerretField createDocFieldWithName:name data:value];
-        } else {
-            field = [FerretField createDocFieldWithName:name value:[value description]];
-        }
-        frt_doc_add_field(doc, field);
+    for (FerretField *field in fields) {
+        FrtDocField *docField = [field createDocField];
+        frt_doc_add_field(doc, docField);
     }
     frt_iw_add_doc(writer, doc);
     frt_doc_destroy(doc);
