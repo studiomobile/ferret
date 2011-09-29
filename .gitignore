@@ -9,3 +9,6 @@ tags
 
 # osx noise
 .DS_Store
+
+# user configuration
+User.xcconfig

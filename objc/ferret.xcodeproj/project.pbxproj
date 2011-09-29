@@ -312,6 +312,7 @@
 		B4CE98FB13C5993B00E7CEC9 /* FerretQueryParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FerretQueryParser.m; sourceTree = "<group>"; };
 		B4CE98FF13C5994300E7CEC9 /* FerretQuery.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FerretQuery.h; sourceTree = "<group>"; };
 		B4CE990013C5994300E7CEC9 /* FerretQueryParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FerretQueryParser.h; sourceTree = "<group>"; };
+		DA5610911434C924005F36F3 /* Config.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = Config.xcconfig; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -329,6 +330,7 @@
 		B40A5D6713C32D490004571E = {
 			isa = PBXGroup;
 			children = (
+				DA5610911434C924005F36F3 /* Config.xcconfig */,
 				B40A603F13C32DEC0004571E /* include */,
 				B40A602A13C32DDC0004571E /* ferret */,
 				B40A5D8313C32D6F0004571E /* c */,
@@ -814,8 +816,8 @@
 /* Begin XCBuildConfiguration section */
 		B40A5D7A13C32D490004571E /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = DA5610911434C924005F36F3 /* Config.xcconfig */;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				CLANG_ENABLE_OBJC_ARC = YES;
 				COPY_PHASE_STRIP = NO;
@@ -828,9 +830,9 @@
 				);
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
-				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = "${inherited}";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				SDKROOT = iphoneos;
 			};
@@ -838,16 +840,16 @@
 		};
 		B40A5D7B13C32D490004571E /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = DA5610911434C924005F36F3 /* Config.xcconfig */;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				CLANG_ENABLE_OBJC_ARC = YES;
 				COPY_PHASE_STRIP = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
-				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = "${inherited}";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
