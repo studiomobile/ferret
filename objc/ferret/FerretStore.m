@@ -88,7 +88,6 @@
         FrtSymbol name = frt_intern([desc.name UTF8String]);
         FrtFieldInfo *fi = frt_fi_new(name, desc.storeValue, desc.indexValue, desc.termVectorValue);
         frt_fis_add_field(fis, fi);
-        frt_fi_deref(fi);
     }
     frt_index_create(store, fis);
     frt_fis_deref(fis);
