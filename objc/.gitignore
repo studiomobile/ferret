@@ -9,3 +9,4 @@ DerivedData
 *.swp
 *.tm_build_errors
 xcuserdata
+User.xcconfig

@@ -60,7 +60,7 @@ void df_destroy(DocField *df)
 char *df_to_s(DocField *df)
 {
 #define APPEND(dst, src) ((dst)[0] = (src)[0], 1)
-#define APPEND2(dst, src) (APPEND(dst, src), APPEND(dst+1, src+1), 2)
+#define APPEND2(dst, src) ((dst)[0] = (src)[0], (dst)[1] = (src)[1], 2)
 
     int i, len = 0, namelen = sym_len(df->name);
     char *str, *s;
