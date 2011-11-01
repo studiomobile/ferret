@@ -27,7 +27,7 @@
 
 - (NSString*)description
 {
-    return [NSString stringWithFormat:@"<FerretMatch: chars:%@ bytes:%@ score:%.3f>", NSStringFromRange(charRange), NSStringFromRange(byteRange), score];
+    return [NSString stringWithFormat:@"<%@: chars:%@ bytes:%@ score:%.3f>", NSStringFromClass(self.class), NSStringFromRange(charRange), NSStringFromRange(byteRange), score];
 }
 
 @end

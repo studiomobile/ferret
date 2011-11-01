@@ -27,8 +27,7 @@
 - (id)initWithLazyDoc:(FrtLazyDoc*)lazy docId:(NSInteger)_docId
 {
     if (!lazy) return nil;
-    self = [super init];
-    if (self) {
+    if ((self = [super init])) {
         lazyDoc = lazy;
         docId = _docId;
     }
@@ -38,8 +37,7 @@
 - (id)initWithDocument:(FrtDocument*)_doc docId:(NSInteger)_docId
 {
     if (!_doc) return nil;
-    self = [super init];
-    if (self) {
+    if ((self = [super init])) {
         doc = _doc;
         docId = _docId;
     }

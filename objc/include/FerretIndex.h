@@ -25,8 +25,8 @@
 - (FerretQuery*)parseQueryText:(NSString*)text;
 - (FerretSearchResults*)search:(FerretQuery*)query;
 
-- (void)appendDocumentFields:(NSArray*)fields;
-- (void)appendDocumentFields:(NSArray*)fields boost:(float)boost;
+- (NSInteger)appendDocumentFields:(NSArray*)fields;
+- (NSInteger)appendDocumentFields:(NSArray*)fields boost:(float)boost;
 
 - (void)commit;
 

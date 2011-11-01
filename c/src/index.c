@@ -5638,7 +5638,7 @@ void dw_reset_postings(Hash *postings)
     postings->fill = postings->size = 0;
 }
 
-void dw_add_doc(DocWriter *dw, Document *doc)
+int dw_add_doc(DocWriter *dw, Document *doc)
 {
     int i;
     float boost;
@@ -5679,7 +5679,7 @@ void dw_add_doc(DocWriter *dw, Document *doc)
         }
     }
     fw_write_tv_index(dw->fw);
-    dw->doc_num++;
+    return dw->doc_num++;
 }
 
 /****************************************************************************
@@ -6325,7 +6325,7 @@ static void iw_flush_ram_segment(IndexWriter *iw)
     iw_maybe_merge_segments(iw);
 }
 
-void iw_add_doc(IndexWriter *iw, Document *doc)
+int iw_add_doc(IndexWriter *iw, Document *doc)
 {
     mutex_lock(&iw->mutex);
     if (NULL == iw->dw) {
@@ -6334,12 +6334,13 @@ void iw_add_doc(IndexWriter *iw, Document *doc)
     else if (NULL == iw->dw->fw) {
         dw_new_segment(iw->dw, sis_new_segment(iw->sis, 0, iw->store));
     }
-    dw_add_doc(iw->dw, doc);
+    int doc_num = dw_add_doc(iw->dw, doc);
     if (mp_used(iw->dw->mp) > iw->config.max_buffer_memory
         || iw->dw->doc_num >= iw->config.max_buffered_docs) {
         iw_flush_ram_segment(iw);
     }
     mutex_unlock(&iw->mutex);
+    return doc_num;
 }
 
 static void iw_commit_i(IndexWriter *iw)

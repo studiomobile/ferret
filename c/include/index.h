@@ -852,7 +852,7 @@ typedef struct FrtDocWriter
 
 extern FrtDocWriter *frt_dw_open(FrtIndexWriter *is, FrtSegmentInfo *si);
 extern void frt_dw_close(FrtDocWriter *dw);
-extern void frt_dw_add_doc(FrtDocWriter *dw, FrtDocument *doc);
+extern int  frt_dw_add_doc(FrtDocWriter *dw, FrtDocument *doc);
 extern void frt_dw_new_segment(FrtDocWriter *dw, FrtSegmentInfo *si);
 /* For testing. need to remove somehow. FIXME */
 extern FrtHash *frt_dw_invert_field(FrtDocWriter *dw,
@@ -896,8 +896,8 @@ extern void frt_iw_delete_term(FrtIndexWriter *iw, FrtSymbol field,
 extern void frt_iw_delete_terms(FrtIndexWriter *iw, FrtSymbol field,
                             char **terms, const int term_cnt);
 extern void frt_iw_close(FrtIndexWriter *iw);
-extern void frt_iw_add_doc(FrtIndexWriter *iw, FrtDocument *doc);
-extern int frt_iw_doc_count(FrtIndexWriter *iw);
+extern int  frt_iw_add_doc(FrtIndexWriter *iw, FrtDocument *doc);
+extern int  frt_iw_doc_count(FrtIndexWriter *iw);
 extern void frt_iw_commit(FrtIndexWriter *iw);
 extern void frt_iw_optimize(FrtIndexWriter *iw);
 extern void frt_iw_add_readers(FrtIndexWriter *iw, FrtIndexReader **readers,

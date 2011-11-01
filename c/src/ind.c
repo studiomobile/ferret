@@ -237,23 +237,23 @@ static INLINE void index_del_doc_with_key_i(Index *self, Document *doc,
     td_destroy(td);
 }
 
-static INLINE void index_add_doc_i(Index *self, Document *doc)
+static INLINE int index_add_doc_i(Index *self, Document *doc)
 {
     if (self->key) {
         index_del_doc_with_key_i(self, doc, self->key);
     }
     ensure_writer_open(self);
-    iw_add_doc(self->iw, doc);
+    int doc_num = iw_add_doc(self->iw, doc);
     AUTOFLUSH_IW(self);
+    return doc_num;
 }
 
-void index_add_doc(Index *self, Document *doc)
+int index_add_doc(Index *self, Document *doc)
 {
     mutex_lock(&self->mutex);
-    {
-        index_add_doc_i(self, doc);
-    }
+    int doc_num = index_add_doc_i(self, doc);
     mutex_unlock(&self->mutex);
+    return doc_num;
 }
 
 void index_add_string(Index *self, char *str)

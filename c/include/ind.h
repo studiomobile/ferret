@@ -42,7 +42,7 @@ extern int frt_index_size(FrtIndex *self);
 extern void frt_index_optimize(FrtIndex *self);
 extern bool frt_index_has_del(FrtIndex *self);
 extern bool frt_index_is_deleted(FrtIndex *self, int doc_num);
-extern void frt_index_add_doc(FrtIndex *self, FrtDocument *doc);
+extern int  frt_index_add_doc(FrtIndex *self, FrtDocument *doc);
 extern void frt_index_add_string(FrtIndex *self, char *str);
 extern void frt_index_add_array(FrtIndex *self, char **ary);
 extern FrtTopDocs *frt_index_search(FrtIndex *self, FrtQuery *query, int first_doc,

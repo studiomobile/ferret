@@ -62,12 +62,12 @@
     return results;
 }
 
-- (void)appendDocumentFields:(NSArray*)fields
+- (NSInteger)appendDocumentFields:(NSArray*)fields
 {
-    [self appendDocumentFields:fields boost:0];
+    return [self appendDocumentFields:fields boost:0];
 }
 
-- (void)appendDocumentFields:(NSArray*)fields boost:(float)boost
+- (NSInteger)appendDocumentFields:(NSArray*)fields boost:(float)boost
 {
     FrtDocument *doc = frt_doc_new();
     if (boost != 0.0f) doc->boost = boost;
@@ -75,8 +75,9 @@
         FrtDocField *docField = [field createDocField];
         frt_doc_add_field(doc, docField);
     }
-    frt_index_add_doc(index, doc);
+    int doc_num = frt_index_add_doc(index, doc);
     frt_doc_destroy(doc);
+    return doc_num;
 }
 
 - (void)commit
