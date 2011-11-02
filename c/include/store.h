@@ -7,9 +7,6 @@
 #include "hashset.h"
 #include "threading.h"
 
-#define FRT_LOCK_PREFIX "ferret-"
-#define FRT_LOCK_EXT ".lck"
-
 typedef struct FrtBuffer
 {
     frt_uchar buf[FRT_BUFFER_SIZE];
@@ -143,14 +140,6 @@ struct FrtCompoundInStream
 
 typedef struct FrtStore FrtStore;
 typedef struct FrtLock FrtLock;
-struct FrtLock
-{
-    char *name;
-    FrtStore *store;
-    int (*obtain)(FrtLock *lock);
-    int (*is_locked)(FrtLock *lock);
-    void (*release)(FrtLock *lock);
-};
 
 typedef struct FrtCompoundStore
 {
@@ -165,6 +154,7 @@ struct FrtStore
     int ref_cnt;                /* for fs_store only */
     frt_mutex_t mutex_i;        /* for internal use only */
     frt_mutex_t mutex;          /* external mutex for use outside */
+    frt_mutex_t write_mutex;
     union
     {
         char *path;             /* for fs_store only */
@@ -177,7 +167,6 @@ struct FrtStore
 #else
     mode_t file_mode;
 #endif
-    FrtHashSet *locks;
 
     /**
      * Create the file +filename+ in the +store+.
@@ -243,28 +232,12 @@ struct FrtStore
                   void *arg);
 
     /**
-     * Clear all the locks in the store.
-     *
-     * @param store self
-     * @raise FRT_IO_ERROR if there is an error opening the directory
-     */
-    void (*clear_locks)(FrtStore *store);
-
-    /**
-     * Clear all files from the store except the lock files.
+     * Clear all files from the store.
      *
      * @param store self
      * @raise FRT_IO_ERROR if there is an error deleting the files
      */
     void (*clear)(FrtStore *store);
-
-    /**
-     * Clear all files from the store including the lock files.
-     *
-     * @param store self
-     * @raise FRT_IO_ERROR if there is an error deleting the files
-     */
-    void (*clear_all)(FrtStore *store);
 
     /**
      * Return the length of the file +filename+ in +store+
@@ -296,22 +269,6 @@ struct FrtStore
      * @raise FRT_FILE_NOT_FOUND_ERROR if the input stream cannot be opened
      */
     FrtInStream *(*open_input)(FrtStore *store, const char *filename);
-
-    /**
-     * Obtain a lock on the lock +lock+
-     *
-     * @param store self
-     * @param lock the lock to obtain
-     */
-    FrtLock *(*open_lock_i)(FrtStore *store, const char *lockname);
-
-    /**
-     * Returns true if +lock+ is locked. To test if the file is locked:wq
-     *
-     * @param lock the lock to test
-     * @raise FRT_IO_ERROR if there is an error detecting the lock status
-     */
-    void (*close_lock_i)(FrtLock *lock);
 
     /**
      * Internal function to close the store freeing implementation specific
@@ -410,35 +367,6 @@ extern FrtOutStream *frt_ram_new_buffer();
  * @param os the FrtOutStream to destroy
  */
 extern void frt_ram_destroy_buffer(FrtOutStream *os);
-
-/**
- * Call the function +func+ with the +lock+ locked. The argument +arg+ will be
- * passed to +func+. If you need to pass more than one argument you should use
- * a struct. When the function is finished, release the lock.
- *
- * @param lock     lock to be locked while func is called
- * @param func     function to call with the lock locked
- * @param arg      argument to pass to the function
- * @raise FRT_IO_ERROR if the lock is already locked
- * @see frt_with_lock_name
- */
-extern void frt_with_lock(FrtLock *lock, void (*func)(void *arg), void *arg);
-
-/**
- * Create a lock in the +store+ with the name +lock_name+. Call the function
- * +func+ with the lock locked. The argument +arg+ will be passed to +func+.
- * If you need to pass more than one argument you should use a struct. When
- * the function is finished, release and destroy the lock.
- *
- * @param store     store to open the lock in
- * @param lock_name name of the lock to open
- * @param func      function to call with the lock locked
- * @param arg       argument to pass to the function
- * @raise FRT_IO_ERROR  if the lock is already locked
- * @see frt_with_lock
- */
-extern void frt_with_lock_name(FrtStore *store, const char *lock_name,
-                           void (*func)(void *arg), void *arg);
 
 /**
  * Remove a reference to the store. If the reference count gets to zero free
@@ -783,8 +711,12 @@ extern void frt_is2os_copy_vints(FrtInStream *is, FrtOutStream *os, int cnt);
  */
 extern char *frt_store_to_s(FrtStore *store);
 
-extern FrtLock *frt_open_lock(FrtStore *store, const char *lockname);
+extern FrtLock *frt_open_write_lock(FrtStore *store);
 extern void frt_close_lock(FrtLock *lock);
+
+extern int  frt_lock_obtain(FrtLock *lock);
+extern int  frt_lock_is_locked(FrtLock *lock);
+extern void frt_lock_release(FrtLock *lock);
 
 /* required by submodules
  * FIXME document. Perhaps include in different header?? */
@@ -792,7 +724,6 @@ extern FrtStore *frt_store_new();
 extern void frt_store_destroy(FrtStore *store);
 extern FrtOutStream *frt_os_new();
 extern FrtInStream *frt_is_new();
-extern int frt_file_is_lock(const char *filename);
 extern bool frt_file_name_filter_is_index_file(const char *file_name,
                                                bool include_locks);
 

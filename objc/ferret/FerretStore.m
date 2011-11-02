@@ -53,7 +53,7 @@
     if (!exist || !isDir) return nil;
     FrtStore *store = frt_open_fs_store([path UTF8String]);
     if (!store) return nil;
-    store->clear_all(store);
+    store->clear(store);
     return [[self alloc] initWithStore:store];
 }
 

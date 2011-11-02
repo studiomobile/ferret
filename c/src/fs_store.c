@@ -126,28 +126,8 @@ static void fs_each(Store *store, void (*func)(const char *fname, void *arg), vo
     }
 
     while ((de = readdir(d)) != NULL) {
-        if (de->d_name[0] > '/' /* skip ., .., / and '\0'*/
-                && !file_is_lock(de->d_name)) {
+        if (de->d_name[0] > '/' /* skip ., .., / and '\0'*/) {
             func(de->d_name, arg);
-        }
-    }
-    closedir(d);
-}
-
-static void fs_clear_locks(Store *store)
-{
-    struct dirent *de;
-    DIR *d = opendir(store->dir.path);
-
-    if (!d) {
-        RAISE(IO_ERROR, "clearing locks in %s: <%s>",
-              store->dir.path, strerror(errno));
-    }
-
-    while ((de = readdir(d)) != NULL) {
-        if (file_is_lock(de->d_name)) {
-            char path[MAX_FILE_PATH];
-            remove(join_path(path, store->dir.path, de->d_name));
         }
     }
     closedir(d);
@@ -178,30 +158,7 @@ static void fs_clear(Store *store)
     }
 
     while ((de = readdir(d)) != NULL) {
-        if (de->d_name[0] > '/' /* skip ., .., / and '\0'*/
-                && !file_is_lock(de->d_name)) {
-            remove_if_index_file(store->dir.path, de->d_name);
-        }
-    }
-    closedir(d);
-}
-
-/**
- * Clear all files which belong to the index. Use fs_clear to clear the
- * directory regardless of the files origin.
- */
-static void fs_clear_all(Store *store)
-{
-    struct dirent *de;
-    DIR *d = opendir(store->dir.path);
-
-    if (!d) {
-        RAISE(IO_ERROR, "clearing all files in %s: <%s>",
-              store->dir.path, strerror(errno));
-    }
-
-    while ((de = readdir(d)) != NULL) {
-        if (de->d_name[0] > '/') { /* skip ., .., / and '\0'*/
+        if (de->d_name[0] > '/' /* skip ., .., / and '\0'*/) {
             remove_if_index_file(store->dir.path, de->d_name);
         }
     }
@@ -216,11 +173,6 @@ static void fs_clear_all(Store *store)
  */
 static void fs_destroy(Store *store)
 {
-    TRY
-        fs_clear_locks(store);
-    XCATCHALL
-        HANDLED();
-    XENDTRY
     free(store->dir.path);
     store_destroy(store);
 }
@@ -349,70 +301,6 @@ static InStream *fs_open_input(Store *store, const char *filename)
     return is;
 }
 
-#define LOCK_OBTAIN_TIMEOUT 10
-
-static int fs_lock_obtain(Lock *lock)
-{
-    int f;
-    int trys = LOCK_OBTAIN_TIMEOUT;
-    while (((f =
-             open(lock->name, O_CREAT | O_EXCL | O_RDWR,
-                   S_IRUSR | S_IWUSR)) < 0) && (trys > 0)) {
-
-        /* sleep for 10 milliseconds */
-        micro_sleep(10000);
-        trys--;
-    }
-    if (f >= 0) {
-        close(f);
-        return true;
-    }
-    else {
-        return false;
-    }
-}
-
-static int fs_lock_is_locked(Lock *lock)
-{
-    int f = open(lock->name, O_CREAT | O_EXCL | O_WRONLY, S_IRUSR | S_IWUSR);
-    if (f >= 0) {
-        if (close(f) || remove(lock->name)) {
-            RAISE(IO_ERROR, "couldn't close lock \"%s\": <%s>", lock->name,
-                  strerror(errno));
-        }
-        return false;
-    }
-    else {
-        return true;
-    }
-}
-
-static void fs_lock_release(Lock *lock)
-{
-    remove(lock->name);
-}
-
-static Lock *fs_open_lock_i(Store *store, const char *lockname)
-{
-    Lock *lock = ALLOC(Lock);
-    char lname[100];
-    char path[MAX_FILE_PATH];
-    snprintf(lname, 100, "%s%s.lck", LOCK_PREFIX, lockname);
-    lock->name = estrdup(join_path(path, store->dir.path, lname));
-    lock->store = store;
-    lock->obtain = &fs_lock_obtain;
-    lock->release = &fs_lock_release;
-    lock->is_locked = &fs_lock_is_locked;
-    return lock;
-}
-
-static void fs_close_lock_i(Lock *lock)
-{
-    remove(lock->name);
-    free(lock->name);
-    free(lock);
-}
-
 static Hash *stores = NULL;
 
 #ifndef UNTHREADED
@@ -464,14 +352,10 @@ static Store *fs_store_new(const char *pathname)
     new_store->count         = &fs_count;
     new_store->close_i       = &fs_close_i;
     new_store->clear         = &fs_clear;
-    new_store->clear_all     = &fs_clear_all;
-    new_store->clear_locks   = &fs_clear_locks;
     new_store->length        = &fs_length;
     new_store->each          = &fs_each;
     new_store->new_output    = &fs_new_output;
     new_store->open_input    = &fs_open_input;
-    new_store->open_lock_i   = &fs_open_lock_i;
-    new_store->close_lock_i  = &fs_close_lock_i;
     return new_store;
 }
 

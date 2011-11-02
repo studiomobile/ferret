@@ -95,8 +95,6 @@
 #define IO_ERROR                           FRT_IO_ERROR
 #define IS_C99                             FRT_IS_C99
 #define LOCK_ERROR                         FRT_LOCK_ERROR
-#define LOCK_EXT                           FRT_LOCK_EXT
-#define LOCK_PREFIX                        FRT_LOCK_PREFIX
 #define MATCH_ALL_QUERY                    FRT_MATCH_ALL_QUERY
 #define MATCH_VECTOR_INIT_CAPA             FRT_MATCH_VECTOR_INIT_CAPA
 #define MAX                                FRT_MAX
@@ -488,7 +486,6 @@
 #define fi_new                                         frt_fi_new
 #define fi_to_s                                        frt_fi_to_s
 #define field_index_get                                frt_field_index_get
-#define file_is_lock                                   frt_file_is_lock
 #define file_name_filter_is_index_file                 frt_file_name_filter_is_index_file
 #define filt_create                                    frt_filt_create
 #define filt_deref                                     frt_filt_deref
@@ -682,6 +679,9 @@
 #define letter_analyzer_new                            frt_letter_analyzer_new
 #define letter_tokenizer_new                           frt_letter_tokenizer_new
 #define lmalloc                                        frt_lmalloc
+#define lock_obtain                                    frt_lock_obtain
+#define lock_is_locked                                 frt_lock_is_locked
+#define lock_release                                   frt_lock_release
 #define lowercase_filter_new                           frt_lowercase_filter_new
 #define lt_ft                                          frt_lt_ft
 #define mapping_filter_add                             frt_mapping_filter_add
@@ -748,7 +748,7 @@
 #define open_cmpd_store                                frt_open_cmpd_store
 #define open_cw                                        frt_open_cw
 #define open_fs_store                                  frt_open_fs_store
-#define open_lock                                      frt_open_lock
+#define open_write_lock                                frt_open_write_lock
 #define open_ram_store                                 frt_open_ram_store
 #define open_ram_store_and_copy                        frt_open_ram_store_and_copy
 #define os_close                                       frt_os_close
@@ -1009,8 +1009,6 @@
 #define weprintf                                       frt_weprintf
 #define whitespace_analyzer_new                        frt_whitespace_analyzer_new
 #define whitespace_tokenizer_new                       frt_whitespace_tokenizer_new
-#define with_lock                                      frt_with_lock
-#define with_lock_name                                 frt_with_lock_name
 #define x_abort_on_exception                           frt_x_abort_on_exception
 #define x_do_logging                                   frt_x_do_logging
 #define x_exception_stream                             frt_x_exception_stream

@@ -13,18 +13,6 @@
 #endif
 #include "internal.h"
 
-#define GET_LOCK(lock, name, store, err_msg) do {\
-    lock = store->open_lock(store, name);\
-    if (!lock->obtain(lock)) {\
-        RAISE(LOCK_ERROR, err_msg);\
-    }\
-} while(0)
-
-#define RELEASE_LOCK(lock, store) do {\
-    lock->release(lock);\
-    store->close_lock(lock);\
-} while (0)
-
 const Config default_config = {
     0x100000,       /* chunk size is 1Mb */
     0x1000000,      /* Max memory used for buffer is 16 Mb */
@@ -3882,8 +3870,8 @@ static void ir_acquire_write_lock(IndexReader *ir)
     }
 
     if (NULL == ir->write_lock) {
-        ir->write_lock = open_lock(ir->store, WRITE_LOCK_NAME);
-        if (!ir->write_lock->obtain(ir->write_lock)) {/* obtain write lock */
+        ir->write_lock = open_write_lock(ir->store);
+        if (!lock_obtain(ir->write_lock)) {/* obtain write lock */
             RAISE(LOCK_ERROR, "Could not obtain write lock when trying to "
                               "write changes to the index. Check that there "
                               "are no stale locks in the index. Look for "
@@ -3896,7 +3884,7 @@ static void ir_acquire_write_lock(IndexReader *ir)
          * opened.  if so, this reader is no longer valid for deletion */
         if (sis_read_current_version(ir->store) > ir->sis->version) {
             ir->is_stale = true;
-            ir->write_lock->release(ir->write_lock);
+            lock_release(ir->write_lock);
             close_lock(ir->write_lock);
             ir->write_lock = NULL;
             RAISE(STATE_ERROR, "IndexReader out of date and no longer valid "
@@ -4113,7 +4101,7 @@ static void ir_commit_i(IndexReader *ir)
 
             if (NULL != ir->write_lock) {
                 /* release write lock */
-                ir->write_lock->release(ir->write_lock);
+                lock_release(ir->write_lock);
                 close_lock(ir->write_lock);
                 ir->write_lock = NULL;
             }
@@ -6160,15 +6148,15 @@ static int sm_merge(SegmentMerger *sm)
 void index_create(Store *store, FieldInfos *fis)
 {
     SegmentInfos *sis = sis_new(fis);
-    store->clear_all(store);
+    store->clear(store);
     sis_write(sis, store, NULL);
     sis_destroy(sis);
 }
 
 bool index_is_locked(Store *store)
 {
-    Lock *write_lock = open_lock(store, WRITE_LOCK_NAME);
-    bool is_locked = write_lock->is_locked(write_lock);
+    Lock *write_lock = open_write_lock(store);
+    bool is_locked = lock_is_locked(write_lock);
     close_lock(write_lock);
     return is_locked;
 }
@@ -6464,7 +6452,7 @@ void iw_close(IndexWriter *iw)
     fis_deref(iw->fis);
     sim_destroy(iw->similarity);
 
-    iw->write_lock->release(iw->write_lock);
+    lock_release(iw->write_lock);
     close_lock(iw->write_lock);
     iw->write_lock = NULL;
     store_deref(iw->store);
@@ -6486,8 +6474,8 @@ IndexWriter *iw_open(Store *store, Analyzer *volatile analyzer,
     iw->config = *config;
 
     TRY
-        iw->write_lock = open_lock(store, WRITE_LOCK_NAME);
-        if (!iw->write_lock->obtain(iw->write_lock)) {
+        iw->write_lock = open_write_lock(store);
+        if (!lock_obtain(iw->write_lock)) {
             RAISE(LOCK_ERROR,
                   "Couldn't obtain write lock when opening IndexWriter");
         }
@@ -6497,7 +6485,7 @@ IndexWriter *iw_open(Store *store, Analyzer *volatile analyzer,
         REF(iw->fis);
     XCATCHALL
         if (iw->write_lock) {
-            iw->write_lock->release(iw->write_lock);
+            lock_release(iw->write_lock);
             close_lock(iw->write_lock);
             iw->write_lock = NULL;
         }
