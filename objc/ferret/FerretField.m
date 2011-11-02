@@ -21,6 +21,14 @@
     [FerretStore class]; // force class loading - ferret initialization
 }
 
++ (FerretField*)fieldWithDescriptor:(FerretFieldDescriptor*)desc value:(NSString*)value
+{
+    if (!value) return nil;
+    FerretField *field = [[self alloc] initWithFieldDescriptor:desc];
+    field.value = value;
+    return field;
+}
+
 - (id)initWithFieldDescriptor:(FerretFieldDescriptor*)desc
 {
     if (!desc) return nil;
@@ -41,6 +49,11 @@
     }
     if (boost != 0) field->boost = boost;
     return field;
+}
+
+- (NSString*)description
+{
+    return [NSString stringWithFormat:@"<%@ %@: %@>", NSStringFromClass(self.class), descriptor.name, value ? value : data];
 }
 
 @end

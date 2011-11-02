@@ -17,4 +17,6 @@
 
 - (id)initWithFieldDescriptor:(FerretFieldDescriptor*)descriptor;
 
++ (FerretField*)fieldWithDescriptor:(FerretFieldDescriptor*)descriptor value:(NSString*)value;
+
 @end

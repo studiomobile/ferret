@@ -28,6 +28,8 @@
 - (NSInteger)appendDocumentFields:(NSArray*)fields;
 - (NSInteger)appendDocumentFields:(NSArray*)fields boost:(float)boost;
 
+- (void)removeDocumentWithId:(NSInteger)docId;
+
 - (void)commit;
 
 @end
