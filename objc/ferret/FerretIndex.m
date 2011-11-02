@@ -88,6 +88,7 @@
 - (void)commit
 {
     frt_index_optimize(index);
+    frt_index_flush(index);
 }
 
 @end
