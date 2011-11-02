@@ -5,31 +5,17 @@
 #define VINT_MAX_LEN 10
 #define VINT_END BUFFER_SIZE - VINT_MAX_LEN
 
-/*
- * TODO: add try finally
- */
-void with_lock(Lock *lock, void (*func)(void *arg), void *arg)
+struct FrtLock
 {
-    if (!lock->obtain(lock)) {
-        RAISE(LOCK_ERROR, "couldn't obtain lock \"%s\"", lock->name);
-    }
-    func(arg);
-    lock->release(lock);
-}
+    FrtStore *store;
+    mutex_t *mutex;
+};
 
-/*
- * TODO: add try finally
- */
-void with_lock_name(Store *store, const char *lock_name,
-                    void (*func)(void *arg), void *arg)
+void store_ref(Store *store)
 {
-    Lock *lock = store->open_lock_i(store, lock_name);
-    if (!lock->obtain(lock)) {
-        RAISE(LOCK_ERROR, "couldn't obtain lock \"%s\"", lock->name);
-    }
-    func(arg);
-    lock->release(lock);
-    store->close_lock_i(lock);
+    mutex_lock(&store->mutex_i);
+    store->ref_cnt++;
+    mutex_unlock(&store->mutex_i);
 }
 
 void store_deref(Store *store)
@@ -43,21 +29,40 @@ void store_deref(Store *store)
     }
 }
 
-Lock *open_lock(Store *store, const char *lockname)
+Lock *open_write_lock(Store *store)
 {
-    Lock *lock = store->open_lock_i(store, lockname);
-    hs_add(store->locks, lock);
+    store_ref(store);
+    Lock *lock = ALLOC(Lock);
+    lock->store = store;
+    lock->mutex = &store->write_mutex;
     return lock;
 }
 
 void close_lock(Lock *lock)
 {
-    hs_del(lock->store->locks, lock);
+    if (!lock) return;
+    store_deref(lock->store);
+    free(lock);
 }
 
-static void close_lock_i(Lock *lock)
+int lock_obtain(FrtLock *lock)
 {
-    lock->store->close_lock_i(lock);
+    return mutex_lock(lock->mutex) == 0;
+}
+
+int lock_is_locked(FrtLock *lock)
+{
+    bool acquired = mutex_trylock(lock->mutex) == 0;
+    if (acquired) {
+        mutex_unlock(lock->mutex);
+    }
+    return !acquired;
+}
+
+void lock_release(FrtLock *lock)
+{
+    if (!lock) return;
+    mutex_unlock(lock->mutex);
 }
 
 /**
@@ -69,7 +74,7 @@ Store *store_new()
     store->ref_cnt = 1;
     mutex_init(&store->mutex_i, NULL);
     mutex_init(&store->mutex, NULL);
-    store->locks = hs_new_ptr((free_ft)&close_lock_i);
+    mutex_init(&store->write_mutex, NULL);
     return store;
 }
 
@@ -82,7 +87,7 @@ void store_destroy(Store *store)
 {
     mutex_destroy(&store->mutex_i);
     mutex_destroy(&store->mutex);
-    hs_destroy(store->locks);
+    mutex_destroy(&store->write_mutex);
     free(store);
 }
 
@@ -606,19 +611,6 @@ INLINE void os_write_string_len(OutStream *os, const char *str, int len)
 void os_write_string(OutStream *os, const char *str)
 {
     os_write_string_len(os, str, (int)strlen(str));
-}
-
-/**
- * Determine if the filename is the name of a lock file. Return 1 if it is, 0
- * otherwise.
- *
- * @param filename the name of the file to check
- * @return 1 (true) if the file is a lock file, 0 (false) otherwise
- */
-int file_is_lock(const char *filename)
-{
-    int start = (int) strlen(filename) - 4;
-    return ((start > 0) && (strcmp(LOCK_EXT, &filename[start]) == 0));
 }
 
 void is2os_copy_bytes(InStream *is, OutStream *os, int cnt)

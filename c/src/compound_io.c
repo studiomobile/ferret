@@ -196,20 +196,6 @@ static OutStream *cmpd_new_output(Store *store, const char *file_name)
     return NULL;
 }
 
-static Lock *cmpd_open_lock_i(Store *store, const char *lock_name)
-{
-    (void)store;
-    (void)lock_name;
-    RAISE(UNSUPPORTED_ERROR, "%s", UNSUPPORTED_ERROR_MSG);
-    return NULL;
-}
-
-static void cmpd_close_lock_i(Lock *lock)
-{
-    (void)lock;
-    RAISE(UNSUPPORTED_ERROR, "%s", UNSUPPORTED_ERROR_MSG);
-}
-
 Store *open_cmpd_store(Store *store, const char *name)
 {
     int count, i;
@@ -268,8 +254,6 @@ Store *open_cmpd_store(Store *store, const char *name)
     new_store->close_i      = &cmpd_close_i;
     new_store->new_output   = &cmpd_new_output;
     new_store->open_input   = &cmpd_open_input;
-    new_store->open_lock_i  = &cmpd_open_lock_i;
-    new_store->close_lock_i = &cmpd_close_lock_i;
 
     return new_store;
 }

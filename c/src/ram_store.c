@@ -103,9 +103,6 @@ static void ram_each(Store *store,
     for (i = 0; i <= ht->mask; i++) {
         RAMFile *rf = (RAMFile *)ht->table[i].value;
         if (rf) {
-            if (strncmp(rf->name, LOCK_PREFIX, strlen(LOCK_PREFIX)) == 0) {
-                continue;
-            }
             func(rf->name, arg);
         }
     }
@@ -125,36 +122,7 @@ static void ram_close_i(Store *store)
     store_destroy(store);
 }
 
-/*
- * Be sure to keep the locks
- */
 static void ram_clear(Store *store)
-{
-    int i;
-    Hash *ht = store->dir.ht;
-    for (i = 0; i <= ht->mask; i++) {
-        RAMFile *rf = (RAMFile *)ht->table[i].value;
-        if (rf && !file_is_lock(rf->name)) {
-            DEREF(rf);
-            h_del(ht, rf->name);
-        }
-    }
-}
-
-static void ram_clear_locks(Store *store)
-{
-    int i;
-    Hash *ht = store->dir.ht;
-    for (i = 0; i <= ht->mask; i++) {
-        RAMFile *rf = (RAMFile *)ht->table[i].value;
-        if (rf && file_is_lock(rf->name)) {
-            DEREF(rf);
-            h_del(ht, rf->name);
-        }
-    }
-}
-
-static void ram_clear_all(Store *store)
 {
     int i;
     Hash *ht = store->dir.ht;
@@ -374,52 +342,10 @@ static InStream *ram_open_input(Store *store, const char *filename)
     return is;
 }
 
-#define LOCK_OBTAIN_TIMEOUT 5
-
-static int ram_lock_obtain(Lock *lock)
-{
-    int ret = true;
-    if (ram_exists(lock->store, lock->name)) {
-        ret = false;
-    }
-    ram_touch(lock->store, lock->name);
-    return ret;
-}
-
-static int ram_lock_is_locked(Lock *lock)
-{
-    return ram_exists(lock->store, lock->name);
-}
-
-static void ram_lock_release(Lock *lock)
-{
-    ram_remove(lock->store, lock->name);
-}
-
-static Lock *ram_open_lock_i(Store *store, const char *lockname)
-{
-    Lock *lock = ALLOC(Lock);
-    char lname[100];
-    snprintf(lname, 100, "%s%s.lck", LOCK_PREFIX, lockname);
-    lock->name = estrdup(lname);
-    lock->store = store;
-    lock->obtain = &ram_lock_obtain;
-    lock->release = &ram_lock_release;
-    lock->is_locked = &ram_lock_is_locked;
-    return lock;
-}
-
-static void ram_close_lock_i(Lock *lock)
-{
-    free(lock->name);
-    free(lock);
-}
-
 
 Store *open_ram_store()
 {
     Store *new_store = store_new();
-
     new_store->dir.ht       = h_new_str(NULL, rf_close);
     new_store->touch        = &ram_touch;
     new_store->exists       = &ram_exists;
@@ -427,14 +353,10 @@ Store *open_ram_store()
     new_store->rename       = &ram_rename;
     new_store->count        = &ram_count;
     new_store->clear        = &ram_clear;
-    new_store->clear_all    = &ram_clear_all;
-    new_store->clear_locks  = &ram_clear_locks;
     new_store->length       = &ram_length;
     new_store->each         = &ram_each;
     new_store->new_output   = &ram_new_output;
     new_store->open_input   = &ram_open_input;
-    new_store->open_lock_i  = &ram_open_lock_i;
-    new_store->close_lock_i = &ram_close_lock_i;
     new_store->close_i      = &ram_close_i;
     return new_store;
 }
