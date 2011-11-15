@@ -30,6 +30,8 @@
 
 - (void)removeDocumentWithId:(NSInteger)docId;
 
+- (void)removeDocumentWithId:(NSInteger)docId;
+
 - (void)commit;
 
 @end
