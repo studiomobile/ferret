@@ -7,6 +7,8 @@
 //
 
 #import <unicode/utext.h>
+#import <unicode/ustring.h>
+#import "FerretInternals.h"
 
 typedef struct UnicodeWhitespaceTokenizer
 {
@@ -48,6 +50,7 @@ static FrtTokenStream *unicode_ws_reset(FrtTokenStream *ts, char *text)
         utk->u_text = utext_openUTF8(utk->u_text, text, -1, &status);
         if (U_ZERO_ERROR != status)
             return NULL;
+        utext_nativeLength(utk->u_text); // TODO: research why unicode_ws_next will not work without this one
         ts->text = text;
     } else {
         if (utk->u_text)
@@ -89,11 +92,23 @@ static FrtToken *unicode_ws_next(FrtTokenStream *ts)
 
     tok->start = start;
     tok->end = end;
-    tok->len = end - start;
-    tok->text[tok->len] = 0;
+//    tok->len = end - start;
+//    tok->text[tok->len] = 0;
     tok->pos_inc = 1;
 
-    memcpy(tok->text, ts->text + start, tok->len);
+    UErrorCode err = U_ZERO_ERROR;
+    UChar ucharSrc[FRT_MAX_WORD_SIZE];
+    UChar ucharDst[FRT_MAX_WORD_SIZE];
+    int32_t ucharCount = utext_extract(text, start, end, ucharSrc, FRT_MAX_WORD_SIZE, &err);
+    assert(err == U_ZERO_ERROR);
+
+    ucharCount = u_strToLower(ucharDst, FRT_MAX_WORD_SIZE, ucharSrc, ucharCount, NULL, &err);
+
+    char *retPtr = u_strToUTF8(tok->text, FRT_MAX_WORD_SIZE, NULL, ucharDst, ucharCount, &err);
+//    NSLog(@"tok: (%lld, %lld) %d - '%s'\n", start, end, ucharCount, tok->text);
+    tok->len = strlen(tok->text);
+    assert(tok->text == retPtr);
+    assert(err == U_ZERO_ERROR);
 
     ts->t = ts->text + tok->end;
 
