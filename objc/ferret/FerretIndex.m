@@ -85,11 +85,6 @@
     frt_index_delete(index, docId);
 }
 
-- (void)removeDocumentWithId:(NSInteger)docId
-{
-    frt_index_delete(index, docId);
-}
-
 - (void)commit
 {
     frt_index_optimize(index);
