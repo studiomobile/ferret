@@ -576,6 +576,7 @@ MatchVector *matchv_compact(MatchVector *self)
 
 MatchVector *matchv_compact_with_breaks(MatchVector *self)
 {
+    if (!self->size) return self;
     int left, right;
     matchv_sort(self);
     for (right = left = 0; right < self->size; right++) {
