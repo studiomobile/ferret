@@ -80,12 +80,16 @@ static FrtToken *unicode_ws_next(FrtTokenStream *ts)
                 break;
             }
         } else {
-            if (!u_isblank(c) && !u_ispunct(c)) {
+            if (u_isprint(c) && !u_isblank(c) && !u_ispunct(c)) {
                 start = end = utext_getPreviousNativeIndex(text);
                 digit = u_isdigit(c);
                 word = true;
             }
         }
+    }
+    
+    if (word && c == U_SENTINEL) {
+        end = utext_getPreviousNativeIndex(text) + 1;
     }
 
     if (start == end) return NULL;
